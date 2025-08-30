@@ -1,0 +1,67 @@
+<script>
+  import { Application } from '@splinetool/runtime';
+
+  class SplineLoader {
+    private app: Application | null = null;
+    private loaded = false;
+
+    async loadSpline() {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        
+        const splineContainer = document.getElementById('spline-background');
+        if (!splineContainer) return;
+        
+        splineContainer.appendChild(canvas);
+
+        this.app = new Application(canvas);
+        
+        // Load the scene
+        await this.app.load('https://prod.spline.design/H8P59rHixLffzB-C/scene.splinecode');
+        
+        this.loaded = true;
+        this.onLoadComplete();
+      } catch (error) {
+        console.error('Failed to load Spline scene:', error);
+        this.onLoadError();
+      }
+    }
+
+    onLoadComplete() {
+      // Fade out loading overlay
+      const loadingOverlay = document.getElementById('loading-overlay');
+      if (loadingOverlay) {
+        loadingOverlay.classList.add('hidden');
+        setTimeout(() => {
+          loadingOverlay.style.display = 'none';
+        }, 1000);
+      }
+
+      // Fade in Spline background
+      const splineBackground = document.getElementById('spline-background');
+      if (splineBackground) {
+        splineBackground.classList.add('loaded');
+      }
+    }
+
+    onLoadError() {
+      // If Spline fails to load, just hide the loading overlay
+      // and show the gradient background
+      const loadingOverlay = document.getElementById('loading-overlay');
+      if (loadingOverlay) {
+        loadingOverlay.classList.add('hidden');
+        setTimeout(() => {
+          loadingOverlay.style.display = 'none';
+        }, 1000);
+      }
+    }
+  }
+
+  // Initialize Spline loader when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    const splineLoader = new SplineLoader();
+    splineLoader.loadSpline();
+  });
+</script>

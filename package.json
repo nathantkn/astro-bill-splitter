@@ -12,6 +12,7 @@
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^12.6.7",
+		"@splinetool/runtime": "^1.10.53",
 		"astro": "^5.13.5"
 	},
 	"devDependencies": {

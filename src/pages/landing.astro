@@ -1,0 +1,184 @@
+---
+import Button from '../components/ui/Button.astro';
+---
+
+<div class="app-title">Bill Splitter</div>
+
+<div class="app-content">
+  <div class="page active" id="landing">
+    <h1>Hello! What type of bill do you want to split today?</h1>
+    <div class="button-group">
+      <Button onclick="showPage('dining')">Dining</Button>
+      <Button onclick="showPage('grocery')">Grocery</Button>
+    </div>
+  </div>
+
+  <div class="page" id="dining">
+    <Button variant="back" onclick="showPage('landing')">← Back</Button>
+    <h2>Would you like to split the bill for one person or for the entire party?</h2>
+    <div class="button-group">
+      <Button onclick="showPage('one-person')">One Person</Button>
+      <Button onclick="showPage('party-setup')">Party</Button>
+    </div>
+  </div>
+
+  <div class="page" id="grocery">
+    <Button variant="back" onclick="showPage('landing')">← Back</Button>
+    <h2>Grocery Bill Splitting</h2>
+    <div class="button-group">
+      <p style="color: white; opacity: 0.8;">Grocery splitting functionality coming soon!</p>
+    </div>
+  </div>
+
+  <div class="page" id="one-person">
+    <Button variant="back" onclick="showPage('dining')">← Back</Button>
+    <h2>Individual Bill Calculation</h2>
+    <div class="button-group">
+      <p style="color: white; opacity: 0.8;">Individual calculation page coming soon!</p>
+    </div>
+  </div>
+
+  <div class="page party-setup" id="party-setup">
+    <Button variant="back" onclick="showPage('dining')">← Back</Button>
+    <h2>Add Party Members</h2>
+    
+    <div class="input-group">
+      <label for="member-name">Add a party member:</label>
+      <input type="text" id="member-name" placeholder="Enter name" maxlength="30">
+    </div>
+    
+    <Button variant="success" onclick="addPartyMember()">Add Member</Button>
+    
+    <div id="party-members"></div>
+    
+    <Button 
+      variant="secondary" 
+      id="continue-btn" 
+      onclick="showPage('party-calculation')" 
+      disabled
+    >
+      Continue to Calculation
+    </Button>
+  </div>
+
+  <!-- Party Calculation Page -->
+  <div class="page" id="party-calculation">
+    <Button variant="back" onclick="showPage('party-setup')">← Back</Button>
+    <h2>Party Bill Calculation</h2>
+    <div class="button-group">
+      <p style="color: white; opacity: 0.8;">Party calculation page coming soon!</p>
+      <div id="party-summary" style="color: white; margin-top: 20px; text-align: left;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let partyMembers: string[] = [];
+
+  function showPage(pageId: string) {
+    // Hide current page
+    const currentPage = document.querySelector('.page.active');
+    if (currentPage) {
+      currentPage.classList.remove('active');
+      setTimeout(() => {
+        (currentPage as HTMLElement).style.display = 'none';
+      }, 100);
+    }
+
+    // Show new page with animation
+    setTimeout(() => {
+      const newPage = document.getElementById(pageId);
+      if (newPage) {
+        newPage.style.display = 'block';
+        setTimeout(() => {
+          newPage.classList.add('active');
+        }, 50);
+
+        // Special handling for party calculation page
+        if (pageId === 'party-calculation') {
+          updatePartySummary();
+        }
+      }
+    }, 100);
+  }
+
+  function addPartyMember() {
+    const nameInput = document.getElementById('member-name') as HTMLInputElement;
+    const name = nameInput.value.trim();
+    
+    if (name && !partyMembers.includes(name)) {
+      partyMembers.push(name);
+      nameInput.value = '';
+      updatePartyMembersList();
+      updateContinueButton();
+    } else if (partyMembers.includes(name)) {
+      alert('This person is already in the party!');
+    }
+  }
+
+  function removePartyMember(index: number) {
+    partyMembers.splice(index, 1);
+    updatePartyMembersList();
+    updateContinueButton();
+  }
+
+  function updatePartyMembersList() {
+    const container = document.getElementById('party-members');
+    if (container) {
+      container.innerHTML = '';
+      
+      partyMembers.forEach((member, index) => {
+        const memberDiv = document.createElement('div');
+        memberDiv.className = 'party-member';
+        memberDiv.innerHTML = `
+          <span>${member}</span>
+          <button class="btn btn-danger" onclick="removePartyMember(${index})">Remove</button>
+        `;
+        container.appendChild(memberDiv);
+      });
+    }
+  }
+
+  function updateContinueButton() {
+    const continueBtn = document.getElementById('continue-btn') as HTMLButtonElement;
+    if (continueBtn) {
+      if (partyMembers.length >= 2) {
+        continueBtn.disabled = false;
+        continueBtn.textContent = `Continue with ${partyMembers.length} members`;
+      } else {
+        continueBtn.disabled = true;
+        continueBtn.textContent = 'Add at least 2 members to continue';
+      }
+    }
+  }
+
+  function updatePartySummary() {
+    const summary = document.getElementById('party-summary');
+    if (summary) {
+      summary.innerHTML = `
+        <h3 style="color: white; margin-bottom: 15px;">Party Members (${partyMembers.length}):</h3>
+        ${partyMembers.map((member) => `<p>• ${member}</p>`).join('')}
+      `;
+    }
+  }
+
+  // Make functions global so they can be called from onclick handlers
+  (window as any).showPage = showPage;
+  (window as any).addPartyMember = addPartyMember;
+  (window as any).removePartyMember = removePartyMember;
+
+  // Allow Enter key to add members
+  document.addEventListener('DOMContentLoaded', () => {
+    const memberNameInput = document.getElementById('member-name');
+    if (memberNameInput) {
+      memberNameInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          addPartyMember();
+        }
+      });
+    }
+
+    // Initialize continue button state
+    updateContinueButton();
+  });
+</script>
