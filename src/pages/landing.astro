@@ -1,8 +1,9 @@
 ---
 import Button from '../components/ui/Button.astro';
+import Container from '../components/ui/Container.astro';
 ---
 
-<div class="app-title">Bill Splitter</div>
+<div class="app-title">Chicago Bill Splitter</div>
 
 <div class="app-content">
   <div class="page active" id="landing">
@@ -14,7 +15,7 @@ import Button from '../components/ui/Button.astro';
   </div>
 
   <div class="page" id="dining">
-    <Button variant="back" onclick="showPage('landing')">← Back</Button>
+    <Button variant="back" onclick="showPage('landing')">←</Button>
     <h2>Would you like to split the bill for one person or for the entire party?</h2>
     <div class="button-group">
       <Button onclick="showPage('one-person')">One Person</Button>
@@ -23,7 +24,7 @@ import Button from '../components/ui/Button.astro';
   </div>
 
   <div class="page" id="grocery">
-    <Button variant="back" onclick="showPage('landing')">← Back</Button>
+    <Button variant="back" onclick="showPage('landing')">←</Button>
     <h2>Grocery Bill Splitting</h2>
     <div class="button-group">
       <p style="color: white; opacity: 0.8;">Grocery splitting functionality coming soon!</p>
@@ -31,7 +32,7 @@ import Button from '../components/ui/Button.astro';
   </div>
 
   <div class="page" id="one-person">
-    <Button variant="back" onclick="showPage('dining')">← Back</Button>
+    <Button variant="back" onclick="showPage('dining')">←</Button>
     <h2>Individual Bill Calculation</h2>
     <div class="button-group">
       <p style="color: white; opacity: 0.8;">Individual calculation page coming soon!</p>
@@ -39,31 +40,36 @@ import Button from '../components/ui/Button.astro';
   </div>
 
   <div class="page party-setup" id="party-setup">
-    <Button variant="back" onclick="showPage('dining')">← Back</Button>
-    <h2>Add Party Members</h2>
-    
-    <div class="input-group">
-      <label for="member-name">Add a party member:</label>
-      <input type="text" id="member-name" placeholder="Enter name" maxlength="30">
-    </div>
-    
-    <Button variant="success" onclick="addPartyMember()">Add Member</Button>
-    
-    <div id="party-members"></div>
-    
-    <Button 
-      variant="secondary" 
-      id="continue-btn" 
-      onclick="showPage('party-calculation')" 
-      disabled
-    >
-      Continue to Calculation
-    </Button>
+    <Container>
+      <div class="header">
+        <Button variant="back" onclick="showPage('dining')">←</Button>
+        <h2>Add Party Members</h2>
+      </div>
+      
+      <div class="input-group">
+        <label for="member-name">Add a party member:</label>
+        <input type="text" id="member-name" placeholder="Enter name" maxlength="30">
+      </div>
+      
+      <div class="action-buttons">
+        <Button variant="success" onclick="addPartyMember()">Add Member</Button>
+        
+        <div id="party-members"></div>
+        
+        <Button 
+          variant="secondary" 
+          id="continue-btn" 
+          onclick="showPage('party-calculation')" 
+          disabled
+        >
+          Continue to Calculation
+        </Button>
+      </div>
+    </Container>
   </div>
 
-  <!-- Party Calculation Page -->
   <div class="page" id="party-calculation">
-    <Button variant="back" onclick="showPage('party-setup')">← Back</Button>
+    <Button variant="back" onclick="showPage('party-setup')">←</Button>
     <h2>Party Bill Calculation</h2>
     <div class="button-group">
       <p style="color: white; opacity: 0.8;">Party calculation page coming soon!</p>

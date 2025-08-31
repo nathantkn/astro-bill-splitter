@@ -12,6 +12,7 @@ body {
   justify-content: center;
   align-items: center;
   overflow-x: hidden;
+  position: relative;
 }
 
 .spline-background {
@@ -92,19 +93,24 @@ body {
 
 .button-group {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 20px;
   opacity: 0;
   animation: fadeInUp 0.8s ease-out 0.6s forwards;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .party-setup {
   text-align: left;
+  width: 100%;
+  padding: 20px;
 }
 
 .party-setup h2 {
   text-align: center;
   font-size: 1.5rem;
+  margin-top: 0;
 }
 
 .input-group {
@@ -139,12 +145,53 @@ body {
   background: rgba(255, 255, 255, 0.15);
 }
 
+.party-setup .header {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.party-setup .header h2 {
+  position: absolute;
+  margin: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.party-setup .header .btn-back {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+}
+
+.party-setup .action-buttons {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.party-setup .btn-success,
+.party-setup .btn-secondary {
+  width: 60%;
+  max-width: 300px;
+}
+
+@media (max-width: 480px) {
+  .party-setup .btn-success,
+  .party-setup .btn-secondary {
+    width: 80%;
+  }
+}
+
 .party-member {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 15px;
-  padding: 10px;
+  padding: 10px 15px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
 }
@@ -153,6 +200,19 @@ body {
   color: white;
   flex: 1;
   font-weight: 500;
+}
+
+.party-member .btn-danger {
+  background: rgba(255, 100, 100, 0.3);
+  border: 1px solid rgba(255, 100, 100, 0.5);
+  padding: 8px 15px;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  color: white;
+}
+
+.party-member .btn-danger:hover {
+  background: rgba(255, 100, 100, 0.5);
 }
 
 @keyframes fadeInUp {
@@ -175,4 +235,26 @@ body {
   .page h1, .page h2 {
     font-size: 1.5rem;
   }
+}
+
+.app-title {
+    position: fixed;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 6rem;
+    font-weight: 500;
+    color: white;
+    letter-spacing: 2px;
+    font-family: 'Dancing Script', 'Brush Script MT', cursive;
+    padding: 0.5rem 2rem;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .app-title {
+        font-size: 2.8rem;
+        padding: 0.4rem 1.5rem;
+        top: 1.5rem;
+    }
 }
