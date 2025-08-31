@@ -4,15 +4,17 @@ export interface Props {
   disabled?: boolean;
   onclick?: string;
   class?: string;
+  id?: string;
 }
 
-const { variant = 'primary', disabled = false, onclick, class: className } = Astro.props;
+const { variant = 'primary', disabled = false, onclick, class: className, id } = Astro.props;
 ---
 
 <button 
     class={`btn btn-${variant} ${className || ''}`}
     disabled={disabled}
     onclick={onclick}
+    id={id}
 >
     <slot />
 </button>

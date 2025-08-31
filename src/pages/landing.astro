@@ -47,24 +47,23 @@ import Container from '../components/ui/Container.astro';
       </div>
       
       <div class="input-group">
-        <label for="member-name">Add a party member:</label>
         <div class="input-button-group">
           <input type="text" id="member-name" placeholder="Enter name" maxlength="30">
-          <Button variant="success" onclick="addPartyMember()">Add Member</Button>
+          <Button variant="success" onclick="addPartyMember()">Add</Button>
         </div>
       </div>
       
       <div class="action-buttons">
         <div id="party-members"></div>
         
-        <button 
-          class="btn btn-secondary"
+        <Button 
+          variant="secondary"
           id="continue-btn" 
           onclick="navigateToCalculation()" 
           disabled
         >
             Continue to Calculation
-        </button>
+        </Button>
       </div>
     </Container>
   </div>
@@ -92,7 +91,7 @@ import Container from '../components/ui/Container.astro';
       }, 100);
     }
 
-    // Show new page with animation
+    // Show new page
     setTimeout(() => {
       const newPage = document.getElementById(pageId);
       if (newPage) {
@@ -100,11 +99,6 @@ import Container from '../components/ui/Container.astro';
         setTimeout(() => {
           newPage.classList.add('active');
         }, 50);
-
-        // Special handling for party calculation page
-        if (pageId === 'party-calculation') {
-          updatePartySummary();
-        }
       }
     }, 100);
   }
@@ -117,7 +111,6 @@ import Container from '../components/ui/Container.astro';
         partyMembers.push(name);
         nameInput.value = '';
         updatePartyMembersList();
-        updateContinueButton();  // Already present
     } else if (partyMembers.includes(name)) {
         alert('This person is already in the party!');
     }
@@ -126,7 +119,6 @@ import Container from '../components/ui/Container.astro';
 function removePartyMember(index: number) {
     partyMembers.splice(index, 1);
     updatePartyMembersList();
-    updateContinueButton();  // Already present
 }
 
 function updatePartyMembersList() {
@@ -144,29 +136,17 @@ function updatePartyMembersList() {
             container.appendChild(memberDiv);
         });
     }
-    updateContinueButton();  // Add this line to ensure button updates after list changes
+    updateContinueButton();
 }
 
   function updateContinueButton() {
     const continueBtn = document.getElementById('continue-btn') as HTMLButtonElement;
-    if (continueBtn) {
-        if (partyMembers.length >= 2) {
-            continueBtn.disabled = false;  // Enable button
-            continueBtn.textContent = `Continue with ${partyMembers.length} members`;
-        } else {
-            continueBtn.disabled = true;   // Disable button
-            continueBtn.textContent = 'Add at least 2 members to continue';
-        }
-    }
-}
-
-  function updatePartySummary() {
-    const summary = document.getElementById('party-summary');
-    if (summary) {
-      summary.innerHTML = `
-        <h3 style="color: white; margin-bottom: 15px;">Party Members (${partyMembers.length}):</h3>
-        ${partyMembers.map((member) => `<p>• ${member}</p>`).join('')}
-      `;
+    if (partyMembers.length >= 2) {
+        continueBtn.disabled = false;
+        continueBtn.textContent = `Continue with ${partyMembers.length} members`;
+    } else {
+        continueBtn.disabled = true;
+        continueBtn.textContent = 'Add at least 2 members';
     }
   }
 
@@ -193,8 +173,5 @@ function updatePartyMembersList() {
         }
       });
     }
-
-    // Initialize continue button state
-    updateContinueButton();
   });
 </script>
