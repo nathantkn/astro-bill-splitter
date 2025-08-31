@@ -1,0 +1,668 @@
+---
+import Button from '../components/ui/Button.astro';
+import Container from '../components/ui/Container.astro';
+---
+
+<Container>
+    <div class="page" id="party-calculation">
+        <Button variant="back" onclick="showPage('party-setup')">← Back</Button>
+        
+        <h1>Party Bill Calculator</h1>
+        
+        <div class="party-info">
+            <p><strong>Party Members:</strong> <span id="party-members-display"></span></p>
+        </div>
+
+        <div class="add-item-section">
+            <h3>Add Item</h3>
+            <div class="item-form">
+                <div class="form-group">
+                    <label for="item-name">Item Name</label>
+                    <input type="text" id="item-name" placeholder="e.g., Burger, Pizza">
+                </div>
+                <div class="form-group">
+                    <label for="item-price">Price ($)</label>
+                    <input type="number" id="item-price" placeholder="0.00" step="0.01" min="0">
+                </div>
+                <div class="form-group" style="flex: 0 0 auto; align-self: end;">
+                    <Button variant="success" onclick="addItem()">Add Item</Button>
+                </div>
+            </div>
+            
+            <div class="assignment-section" id="assignment-section" style="display: none;">
+                <h4>Assign to:</h4>
+                <div class="member-checkboxes" id="member-checkboxes"></div>
+                <Button class="btn-small" onclick="confirmAssignment()" style="margin-top: 10px;">Confirm Assignment</Button>
+            </div>
+        </div>
+
+        <div class="receipt">
+            <div class="receipt-header">
+                <h2>BILL RECEIPT</h2>
+                <p>Party Dining Split</p>
+                <p id="receipt-date"></p>
+            </div>
+            
+            <div id="receipt-items">
+                <p style="text-align: center; color: #666; font-style: italic;">No items added yet</p>
+            </div>
+            
+            <div class="receipt-totals" id="receipt-totals" style="display: none;">
+                <div class="total-line">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">$0.00</span>
+                </div>
+                <div class="total-line">
+                    <span>Tax (<span id="tax-display">10.75</span>%):</span>
+                    <span id="tax-amount">$0.00</span>
+                </div>
+                <div class="total-line">
+                    <span>Tip (<span id="tip-display">18</span>%):</span>
+                    <span id="tip-amount">$0.00</span>
+                </div>
+                <div class="total-line final-total">
+                    <span>TOTAL:</span>
+                    <span id="final-total">$0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="tax-tip-section">
+            <div class="tax-section">
+                <h3>Tax Rate</h3>
+                <div class="form-group">
+                    <label for="tax-rate">Tax Percentage (%)</label>
+                    <input type="number" id="tax-rate" value="10.75" step="0.01" min="0" max="100" onchange="updateCalculations()">
+                </div>
+            </div>
+
+            <div class="tip-section">
+                <h3>Tip</h3>
+                <div class="tip-options">
+                    <div class="tip-option" onclick="selectTip(15)">15%</div>
+                    <div class="tip-option selected" onclick="selectTip(18)">18%</div>
+                    <div class="tip-option" onclick="selectTip(20)">20%</div>
+                </div>
+                <div class="form-group">
+                    <label for="custom-tip">Custom Tip (%)</label>
+                    <input type="number" id="custom-tip" placeholder="Enter custom %" step="0.01" min="0" onchange="selectCustomTip()">
+                </div>
+            </div>
+        </div>
+    </div>
+</Container>
+
+<style>
+    .party-info {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        color: white;
+        text-align: center;
+    }
+
+    .add-item-section {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .add-item-section h3 {
+        color: white;
+        margin-bottom: 15px;
+        font-size: 1.2rem;
+    }
+
+    .item-form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+    }
+
+    .form-group {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .form-group label {
+        display: block;
+        color: white;
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 1rem;
+    }
+
+    .form-group input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.6);
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-small {
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-small:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+    }
+
+    .receipt {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        margin: 20px 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        font-family: 'Courier New', monospace;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .receipt-header {
+        text-align: center;
+        border-bottom: 2px dashed #ccc;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+
+    .receipt-header h2 {
+        color: #333;
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+    }
+
+    .receipt-header p {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .receipt-item {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px dotted #ccc;
+    }
+
+    .member-section {
+        border-bottom: 2px solid #333;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+
+    .member-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        color: #333;
+        font-weight: bold;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #666;
+    }
+
+    .member-items {
+        margin-left: 15px;
+        margin-bottom: 15px;
+    }
+
+    .member-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        color: #555;
+        font-size: 0.9rem;
+    }
+
+    .member-totals {
+        margin-left: 15px;
+        border-top: 1px dotted #999;
+        padding-top: 8px;
+    }
+
+    .member-total-line {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+        color: #555;
+        font-size: 0.85rem;
+    }
+
+    .member-final-total {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid #333;
+        color: #333 !important;
+        font-size: 0.95rem !important;
+    }
+
+    .receipt-totals {
+        border-top: 2px solid #333;
+        padding-top: 15px;
+        margin-top: 20px;
+    }
+
+    .total-line {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .final-total {
+        font-weight: bold;
+        font-size: 1.1rem;
+        border-top: 1px solid #333;
+        padding-top: 8px;
+        margin-top: 8px;
+    }
+
+    .assignment-section {
+        margin-top: 15px;
+    }
+
+    .assignment-section h4 {
+        color: white;
+        margin-bottom: 10px;
+        font-size: 1rem;
+    }
+
+    .member-checkboxes {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 8px 12px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .checkbox-item input[type="checkbox"] {
+        margin: 0;
+    }
+
+    .checkbox-item label {
+        color: white;
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin: 0;
+    }
+
+    .tax-tip-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .tax-section, .tip-section {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .tax-section h3, .tip-section h3 {
+        color: white;
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+    }
+
+    .tip-options {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .tip-option {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .tip-option:hover, .tip-option.selected {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    @media (max-width: 768px) {
+        .tax-tip-section {
+            grid-template-columns: 1fr;
+        }
+        
+        .tip-options {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .item-form {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<script>
+    let billItems = [];
+    let currentTipPercentage = 18;
+    let pendingItem = null;
+
+    // Initialize when this page becomes active
+    function initializePartyCalculation() {
+        updatePartyMembersDisplay();
+        updateReceiptDate();
+        generateMemberCheckboxes();
+    }
+
+    function updatePartyMembersDisplay() {
+        const display = document.getElementById('party-members-display');
+        if (display && typeof partyMembers !== 'undefined') {
+            display.textContent = partyMembers.join(', ');
+        }
+    }
+
+    function updateReceiptDate() {
+        const dateElement = document.getElementById('receipt-date');
+        if (dateElement) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+            dateElement.textContent = dateStr;
+        }
+    }
+
+    function generateMemberCheckboxes() {
+        const container = document.getElementById('member-checkboxes');
+        if (!container || typeof partyMembers === 'undefined') return;
+        
+        container.innerHTML = '';
+        
+        partyMembers.forEach(member => {
+            const checkboxItem = document.createElement('div');
+            checkboxItem.className = 'checkbox-item';
+            checkboxItem.innerHTML = `
+                <input type="checkbox" id="member-${member}" value="${member}">
+                <label for="member-${member}">${member}</label>
+            `;
+            container.appendChild(checkboxItem);
+        });
+    }
+
+    function addItem() {
+        const nameInput = document.getElementById('item-name');
+        const priceInput = document.getElementById('item-price');
+        
+        const name = nameInput.value.trim();
+        const price = parseFloat(priceInput.value) || 0;
+        
+        if (!name || price <= 0) {
+            alert('Please enter a valid item name and price.');
+            return;
+        }
+        
+        pendingItem = { name, price };
+        
+        // Show assignment section
+        document.getElementById('assignment-section').style.display = 'block';
+        
+        // Clear checkboxes
+        if (typeof partyMembers !== 'undefined') {
+            partyMembers.forEach(member => {
+                const checkbox = document.getElementById(`member-${member}`);
+                if (checkbox) checkbox.checked = false;
+            });
+        }
+    }
+
+    function confirmAssignment() {
+        if (!pendingItem || typeof partyMembers === 'undefined') return;
+        
+        const assignedMembers = [];
+        partyMembers.forEach(member => {
+            const checkbox = document.getElementById(`member-${member}`);
+            if (checkbox && checkbox.checked) {
+                assignedMembers.push(member);
+            }
+        });
+        
+        if (assignedMembers.length === 0) {
+            alert('Please assign at least one person to this item.');
+            return;
+        }
+        
+        // Add item to bill
+        billItems.push({
+            ...pendingItem,
+            assignedTo: assignedMembers,
+            id: Date.now()
+        });
+        
+        // Clear form
+        document.getElementById('item-name').value = '';
+        document.getElementById('item-price').value = '';
+        document.getElementById('assignment-section').style.display = 'none';
+        pendingItem = null;
+        
+        updateReceipt();
+        updateCalculations();
+    }
+
+    function updateReceipt() {
+        const container = document.getElementById('receipt-items');
+        if (!container || typeof partyMembers === 'undefined') return;
+        
+        if (billItems.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">No items added yet</p>';
+            document.getElementById('receipt-totals').style.display = 'none';
+            return;
+        }
+        
+        container.innerHTML = '';
+        
+        // Calculate totals for calculations
+        const subtotal = billItems.reduce((sum, item) => sum + item.price, 0);
+        const taxRate = parseFloat(document.getElementById('tax-rate').value) / 100;
+        const taxAmount = subtotal * taxRate;
+        const tipAmount = subtotal * (currentTipPercentage / 100);
+        
+        // Group items by member
+        const memberItems = {};
+        const memberSubtotals = {};
+        partyMembers.forEach(member => {
+            memberItems[member] = [];
+            memberSubtotals[member] = 0;
+        });
+        
+        billItems.forEach(item => {
+            const pricePerPerson = item.price / item.assignedTo.length;
+            item.assignedTo.forEach(member => {
+                memberItems[member].push({
+                    name: item.name,
+                    price: pricePerPerson,
+                    originalPrice: item.price,
+                    sharedWith: item.assignedTo.length > 1 ? item.assignedTo.filter(m => m !== member) : null
+                });
+                memberSubtotals[member] += pricePerPerson;
+            });
+        });
+        
+        // Create receipt sections for each member who has items
+        partyMembers.forEach(member => {
+            if (memberItems[member].length > 0) {
+                const memberSection = document.createElement('div');
+                memberSection.className = 'receipt-item member-section';
+                
+                let itemsHTML = '';
+                
+                memberItems[member].forEach(item => {
+                    const sharedText = item.sharedWith ? ` (shared with ${item.sharedWith.join(', ')})` : '';
+                    itemsHTML += `
+                        <div class="member-item">
+                            <span>${item.name}${sharedText}</span>
+                            <span>$${item.price.toFixed(2)}</span>
+                        </div>
+                    `;
+                });
+                
+                // Calculate member's proportional tax and tip
+                const memberProportion = memberSubtotals[member] / subtotal;
+                const memberTax = taxAmount * memberProportion;
+                const memberTip = tipAmount * memberProportion;
+                const memberTotal = memberSubtotals[member] + memberTax + memberTip;
+                
+                memberSection.innerHTML = `
+                    <div class="member-header">
+                        <span style="font-weight: bold; font-size: 1.1rem;">${member.toUpperCase()}</span>
+                    </div>
+                    <div class="member-items">
+                        ${itemsHTML}
+                    </div>
+                    <div class="member-totals">
+                        <div class="member-total-line">
+                            <span>Subtotal:</span>
+                            <span>$${memberSubtotals[member].toFixed(2)}</span>
+                        </div>
+                        <div class="member-total-line">
+                            <span>Tax (${(taxRate * 100).toFixed(2)}%):</span>
+                            <span>$${memberTax.toFixed(2)}</span>
+                        </div>
+                        <div class="member-total-line">
+                            <span>Tip (${currentTipPercentage.toFixed(0)}%):</span>
+                            <span>$${memberTip.toFixed(2)}</span>
+                        </div>
+                        <div class="member-total-line member-final-total">
+                            <span><strong>${member} owes:</strong></span>
+                            <span><strong>$${memberTotal.toFixed(2)}</strong></span>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(memberSection);
+            }
+        });
+        
+        document.getElementById('receipt-totals').style.display = 'block';
+    }
+
+    function updateCalculations() {
+        if (billItems.length === 0) return;
+        
+        const subtotal = billItems.reduce((sum, item) => sum + item.price, 0);
+        const taxRate = parseFloat(document.getElementById('tax-rate').value) / 100;
+        const taxAmount = subtotal * taxRate;
+        const tipAmount = subtotal * (currentTipPercentage / 100);
+        const finalTotal = subtotal + taxAmount + tipAmount;
+        
+        // Update receipt totals
+        document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+        document.getElementById('tax-display').textContent = (taxRate * 100).toFixed(2);
+        document.getElementById('tax-amount').textContent = `$${taxAmount.toFixed(2)}`;
+        document.getElementById('tip-display').textContent = currentTipPercentage.toFixed(0);
+        document.getElementById('tip-amount').textContent = `$${tipAmount.toFixed(2)}`;
+        document.getElementById('final-total').textContent = `$${finalTotal.toFixed(2)}`;
+        
+        // Update the receipt display to show individual totals
+        updateReceipt();
+    }
+
+    function selectTip(percentage) {
+        currentTipPercentage = percentage;
+        
+        // Update tip option styling
+        document.querySelectorAll('.tip-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+        event.target.classList.add('selected');
+        
+        // Clear custom tip input
+        document.getElementById('custom-tip').value = '';
+        
+        updateCalculations();
+    }
+
+    function selectCustomTip() {
+        const customTip = parseFloat(document.getElementById('custom-tip').value);
+        if (customTip >= 0) {
+            currentTipPercentage = customTip;
+            
+            // Clear preset tip selections
+            document.querySelectorAll('.tip-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            updateCalculations();
+        }
+    }
+
+    // Make functions globally available
+    window.addItem = addItem;
+    window.confirmAssignment = confirmAssignment;
+    window.selectTip = selectTip;
+    window.selectCustomTip = selectCustomTip;
+    window.updateCalculations = updateCalculations;
+    window.initializePartyCalculation = initializePartyCalculation;
+
+    // Load party members data when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get party members from localStorage
+        const storedMembers = localStorage.getItem('partyMembers');
+        if (storedMembers) {
+            window.partyMembers = JSON.parse(storedMembers);
+            // Initialize the calculation page
+            initializePartyCalculation();
+        } else {
+            // Redirect back to party setup if no members found
+            window.location.href = '/';
+        }
+        
+        const itemNameInput = document.getElementById('item-name');
+        const itemPriceInput = document.getElementById('item-price');
+        
+        if (itemNameInput) {
+            itemNameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    if (itemPriceInput) itemPriceInput.focus();
+                }
+            });
+        }
+
+        if (itemPriceInput) {
+            itemPriceInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addItem();
+                }
+            });
+        }
+    });
+</script>

@@ -48,22 +48,23 @@ import Container from '../components/ui/Container.astro';
       
       <div class="input-group">
         <label for="member-name">Add a party member:</label>
-        <input type="text" id="member-name" placeholder="Enter name" maxlength="30">
+        <div class="input-button-group">
+          <input type="text" id="member-name" placeholder="Enter name" maxlength="30">
+          <Button variant="success" onclick="addPartyMember()">Add Member</Button>
+        </div>
       </div>
       
       <div class="action-buttons">
-        <Button variant="success" onclick="addPartyMember()">Add Member</Button>
-        
         <div id="party-members"></div>
         
-        <Button 
-          variant="secondary" 
+        <button 
+          class="btn btn-secondary"
           id="continue-btn" 
-          onclick="showPage('party-calculation')" 
+          onclick="navigateToCalculation()" 
           disabled
         >
-          Continue to Calculation
-        </Button>
+            Continue to Calculation
+        </button>
       </div>
     </Container>
   </div>
@@ -113,50 +114,51 @@ import Container from '../components/ui/Container.astro';
     const name = nameInput.value.trim();
     
     if (name && !partyMembers.includes(name)) {
-      partyMembers.push(name);
-      nameInput.value = '';
-      updatePartyMembersList();
-      updateContinueButton();
+        partyMembers.push(name);
+        nameInput.value = '';
+        updatePartyMembersList();
+        updateContinueButton();  // Already present
     } else if (partyMembers.includes(name)) {
-      alert('This person is already in the party!');
+        alert('This person is already in the party!');
     }
-  }
+}
 
-  function removePartyMember(index: number) {
+function removePartyMember(index: number) {
     partyMembers.splice(index, 1);
     updatePartyMembersList();
-    updateContinueButton();
-  }
+    updateContinueButton();  // Already present
+}
 
-  function updatePartyMembersList() {
+function updatePartyMembersList() {
     const container = document.getElementById('party-members');
     if (container) {
-      container.innerHTML = '';
-      
-      partyMembers.forEach((member, index) => {
-        const memberDiv = document.createElement('div');
-        memberDiv.className = 'party-member';
-        memberDiv.innerHTML = `
-          <span>${member}</span>
-          <button class="btn btn-danger" onclick="removePartyMember(${index})">Remove</button>
-        `;
-        container.appendChild(memberDiv);
-      });
+        container.innerHTML = '';
+        
+        partyMembers.forEach((member, index) => {
+            const memberDiv = document.createElement('div');
+            memberDiv.className = 'party-member';
+            memberDiv.innerHTML = `
+                <span>${member}</span>
+                <button class="btn btn-danger" onclick="removePartyMember(${index})">Remove</button>
+            `;
+            container.appendChild(memberDiv);
+        });
     }
-  }
+    updateContinueButton();  // Add this line to ensure button updates after list changes
+}
 
   function updateContinueButton() {
     const continueBtn = document.getElementById('continue-btn') as HTMLButtonElement;
     if (continueBtn) {
-      if (partyMembers.length >= 2) {
-        continueBtn.disabled = false;
-        continueBtn.textContent = `Continue with ${partyMembers.length} members`;
-      } else {
-        continueBtn.disabled = true;
-        continueBtn.textContent = 'Add at least 2 members to continue';
-      }
+        if (partyMembers.length >= 2) {
+            continueBtn.disabled = false;  // Enable button
+            continueBtn.textContent = `Continue with ${partyMembers.length} members`;
+        } else {
+            continueBtn.disabled = true;   // Disable button
+            continueBtn.textContent = 'Add at least 2 members to continue';
+        }
     }
-  }
+}
 
   function updatePartySummary() {
     const summary = document.getElementById('party-summary');
@@ -168,10 +170,18 @@ import Container from '../components/ui/Container.astro';
     }
   }
 
+  function navigateToCalculation() {
+    // Store party members in localStorage before navigation
+    localStorage.setItem('partyMembers', JSON.stringify(partyMembers));
+    // Navigate to the calculation page
+    window.location.href = '/partydining';
+  }
+
   // Make functions global so they can be called from onclick handlers
   (window as any).showPage = showPage;
   (window as any).addPartyMember = addPartyMember;
   (window as any).removePartyMember = removePartyMember;
+  (window as any).navigateToCalculation = navigateToCalculation;
 
   // Allow Enter key to add members
   document.addEventListener('DOMContentLoaded', () => {
