@@ -1,105 +1,134 @@
 ---
 import Button from '../components/ui/Button.astro';
-import Container from '../components/ui/Container.astro';
 ---
 
-<Container>
-    <div class="page" id="party-calculation">
-        <Button variant="back" onclick="showPage('party-setup')">← Back</Button>
-        
-        <h1>Party Bill Calculator</h1>
-        
-        <div class="party-info">
-            <p><strong>Party Members:</strong> <span id="party-members-display"></span></p>
-        </div>
+<body>
+    <div class="fullscreen-container">
+        <div class="content-wrapper">
+            <div class="page" id="party-calculation">
+                <Button variant="back" onclick="showPage('landing')">Back</Button>
 
-        <div class="add-item-section">
-            <h3>Add Item</h3>
-            <div class="item-form">
-                <div class="form-group">
-                    <label for="item-name">Item Name</label>
-                    <input type="text" id="item-name" placeholder="e.g., Burger, Pizza">
-                </div>
-                <div class="form-group">
-                    <label for="item-price">Price ($)</label>
-                    <input type="number" id="item-price" placeholder="0.00" step="0.01" min="0">
-                </div>
-                <div class="form-group" style="flex: 0 0 auto; align-self: end;">
-                    <Button variant="success" onclick="addItem()">Add Item</Button>
-                </div>
-            </div>
-            
-            <div class="assignment-section" id="assignment-section" style="display: none;">
-                <h4>Assign to:</h4>
-                <div class="member-checkboxes" id="member-checkboxes"></div>
-                <Button class="btn-small" onclick="confirmAssignment()" style="margin-top: 10px;">Confirm Assignment</Button>
-            </div>
-        </div>
+                <h1>Party Bill for <span id="party-members-display"></span></h1>
 
-        <div class="receipt">
-            <div class="receipt-header">
-                <h2>BILL RECEIPT</h2>
-                <p>Party Dining Split</p>
-                <p id="receipt-date"></p>
-            </div>
-            
-            <div id="receipt-items">
-                <p style="text-align: center; color: #666; font-style: italic;">No items added yet</p>
-            </div>
-            
-            <div class="receipt-totals" id="receipt-totals" style="display: none;">
-                <div class="total-line">
-                    <span>Subtotal:</span>
-                    <span id="subtotal">$0.00</span>
+                <div class="add-item-section">
+                    <h3>Add Item</h3>
+                    <div class="item-form">
+                        <div class="form-group">
+                            <label for="item-name">Item Name</label>
+                            <input type="text" id="item-name" placeholder="e.g., Burger, Pizza">
+                        </div>
+                        <div class="form-group">
+                            <label for="item-price">Price ($)</label>
+                            <input type="number" id="item-price" placeholder="0.00" step="0.01" min="0">
+                        </div>
+                        <div class="form-group" style="flex: 0 0 auto; align-self: end;">
+                            <Button variant="success" onclick="addItem()">Add Item</Button>
+                        </div>
+                    </div>
+                    
+                    <div class="assignment-section" id="assignment-section" style="display: none;">
+                        <h4>Assign to:</h4>
+                        <div class="member-checkboxes" id="member-checkboxes"></div>
+                        <Button class="btn-small" onclick="confirmAssignment()" style="margin-top: 10px;">Confirm Assignment</Button>
+                    </div>
                 </div>
-                <div class="total-line">
-                    <span>Tax (<span id="tax-display">10.75</span>%):</span>
-                    <span id="tax-amount">$0.00</span>
-                </div>
-                <div class="total-line">
-                    <span>Tip (<span id="tip-display">18</span>%):</span>
-                    <span id="tip-amount">$0.00</span>
-                </div>
-                <div class="total-line final-total">
-                    <span>TOTAL:</span>
-                    <span id="final-total">$0.00</span>
-                </div>
-            </div>
-        </div>
 
-        <div class="tax-tip-section">
-            <div class="tax-section">
-                <h3>Tax Rate</h3>
-                <div class="form-group">
-                    <label for="tax-rate">Tax Percentage (%)</label>
-                    <input type="number" id="tax-rate" value="10.75" step="0.01" min="0" max="100" onchange="updateCalculations()">
-                </div>
-            </div>
+                <div class="tax-tip-section">
+                    <div class="tax-section">
+                        <h3>Tax Rate</h3>
+                        <div class="form-group">
+                            <label for="tax-rate">Tax Percentage (%)</label>
+                            <input type="number" id="tax-rate" value="10.75" step="0.01" min="0" max="100" onchange="updateCalculations()">
+                        </div>
+                    </div>
 
-            <div class="tip-section">
-                <h3>Tip</h3>
-                <div class="tip-options">
-                    <div class="tip-option" onclick="selectTip(15)">15%</div>
-                    <div class="tip-option selected" onclick="selectTip(18)">18%</div>
-                    <div class="tip-option" onclick="selectTip(20)">20%</div>
+                    <div class="tip-section">
+                        <h3>Tip</h3>
+                        <div class="tip-options">
+                            <div class="tip-option" onclick="selectTip(15)">15%</div>
+                            <div class="tip-option selected" onclick="selectTip(18)">18%</div>
+                            <div class="tip-option" onclick="selectTip(20)">20%</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="custom-tip">Custom Tip (%)</label>
+                            <input type="number" id="custom-tip" placeholder="Enter custom %" step="0.01" min="0" onchange="selectCustomTip()">
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="custom-tip">Custom Tip (%)</label>
-                    <input type="number" id="custom-tip" placeholder="Enter custom %" step="0.01" min="0" onchange="selectCustomTip()">
+
+                <div class="receipt">
+                    <div class="receipt-header">
+                        <h2>BILL RECEIPT</h2>
+                        <p>Party Dining Split</p>
+                        <p id="receipt-date"></p>
+                    </div>
+                    
+                    <div id="receipt-items">
+                        <p style="text-align: center; color: #666; font-style: italic;">No items added yet</p>
+                    </div>
+                    
+                    <div class="receipt-totals" id="receipt-totals" style="display: none;">
+                        <div class="total-line">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">$0.00</span>
+                        </div>
+                        <div class="total-line">
+                            <span>Tax (<span id="tax-display">10.75</span>%):</span>
+                            <span id="tax-amount">$0.00</span>
+                        </div>
+                        <div class="total-line">
+                            <span>Tip (<span id="tip-display">18</span>%):</span>
+                            <span id="tip-amount">$0.00</span>
+                        </div>
+                        <div class="total-line final-total">
+                            <span>TOTAL:</span>
+                            <span id="final-total">$0.00</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</Container>
+</body>
 
 <style>
-    .party-info {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 30px;
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html, body {
+        height: 100%;
+        overflow-x: hidden;
+    }
+
+    .fullscreen-container {
+        min-height: 100vh;
+        width: 100vw;
+        background: linear-gradient(135deg, #1a1f25 0%, #2c3e50 100%);
+        padding: 0;
+        margin: 0;
+        position: relative;
+    }
+
+    .content-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        min-height: 100vh;
+    }
+
+    .page {
+        width: 100%;
+    }
+
+    .page h1 {
         color: white;
         text-align: center;
+        margin-bottom: 30px;
+        font-size: 2.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     .add-item-section {
@@ -108,6 +137,7 @@ import Container from '../components/ui/Container.astro';
         border-radius: 15px;
         margin-bottom: 30px;
         border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
     }
 
     .add-item-section h3 {
@@ -176,7 +206,7 @@ import Container from '../components/ui/Container.astro';
         border-radius: 10px;
         padding: 30px;
         margin: 20px 0;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         font-family: 'Courier New', monospace;
         max-height: 600px;
         overflow-y: auto;
@@ -328,6 +358,7 @@ import Container from '../components/ui/Container.astro';
         padding: 20px;
         border-radius: 15px;
         border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
     }
 
     .tax-section h3, .tip-section h3 {
@@ -360,6 +391,10 @@ import Container from '../components/ui/Container.astro';
     }
 
     @media (max-width: 768px) {
+        .content-wrapper {
+            padding: 15px;
+        }
+        
         .tax-tip-section {
             grid-template-columns: 1fr;
         }
@@ -370,6 +405,20 @@ import Container from '../components/ui/Container.astro';
         
         .item-form {
             flex-direction: column;
+        }
+
+        .page h1 {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .content-wrapper {
+            padding: 10px;
+        }
+        
+        .page h1 {
+            font-size: 1.8rem;
         }
     }
 </style>

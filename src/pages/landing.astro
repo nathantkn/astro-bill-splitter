@@ -131,7 +131,7 @@ function updatePartyMembersList() {
             memberDiv.className = 'party-member';
             memberDiv.innerHTML = `
                 <span>${member}</span>
-                <button class="btn btn-danger" onclick="removePartyMember(${index})">Remove</button>
+                <button class="btn btn-danger" onclick="removePartyMember(${index})">x</button>
             `;
             container.appendChild(memberDiv);
         });
