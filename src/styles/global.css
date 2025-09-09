@@ -103,18 +103,6 @@ body {
   flex-wrap: wrap;
 }
 
-@media (max-width: 480px) {
-  .button-group {
-    flex-direction: column;
-    gap: 15px;
-    align-items: stretch;
-  }
-  .button-group .btn {
-    width: 100%;
-    max-width: none;
-  }
-}
-
 .party-setup {
   text-align: left;
   width: 100%;
@@ -198,13 +186,6 @@ body {
   max-width: 300px;
 }
 
-@media (max-width: 480px) {
-  .party-setup .btn-success,
-  .party-setup .btn-secondary {
-    width: 80%;
-  }
-}
-
 .party-member {
   display: flex;
   align-items: center;
@@ -245,7 +226,49 @@ body {
   }
 }
 
-@media (max-width: 480px) {
+.app-title {
+  position: fixed;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 3rem;
+  font-weight: 500;
+  color: white;
+  letter-spacing: 2px;
+  font-family: "Diplomata SC", serif;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.input-button-group {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+}
+
+.input-button-group input {
+  flex: 1;
+}
+
+.input-button-group .btn {
+  padding: 10px 20px;
+  height: 45px;
+  margin: 0;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .app-title {
+    font-size: 1.8rem;
+    padding: 0.3rem 1rem;
+    top: 1rem;
+    white-space: normal;
+  }
+
   .container {
     padding: 30px 20px;
     margin: 20px;
@@ -273,48 +296,4 @@ body {
     border-radius: 12px;
     min-height: 48px;
   }
-}
-
-.app-title {
-    position: fixed;
-    top: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 3rem;
-    font-weight: 500;
-    color: white;
-    letter-spacing: 2px;
-    font-family: "Diplomata SC", serif;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
-
-@media (max-width: 768px) {
-    .app-title {
-        font-size: 1.8rem;
-        padding: 0.3rem 1rem;
-        top: 1rem;
-        white-space: normal;
-    }
-}
-
-.input-button-group {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  align-items: center;
-}
-
-.input-button-group input {
-  flex: 1;
-}
-
-.input-button-group .btn {
-  padding: 10px 20px;
-  height: 45px; /* Match input height */
-  margin: 0;
-}
-
-.input-group {
-  margin-bottom: 20px;
 }

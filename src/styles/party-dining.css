@@ -25,18 +25,6 @@ html, body {
     min-height: 100vh;
 }
 
-@media (max-width: 768px) {
-    .content-wrapper {
-        padding: 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .content-wrapper {
-        padding: 10px;
-    }
-}
-
 .page {
     width: 100%;
 }
@@ -47,19 +35,6 @@ html, body {
     margin-bottom: 30px;
     font-size: 2.5rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-@media (max-width: 768px) {
-    .page h1 {
-        font-size: 2rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .page h1 {
-        font-size: 1.8rem;
-        margin-bottom: 20px;
-    }
 }
 
 .btn-back {
@@ -108,18 +83,6 @@ html, body {
 .add-item-form .btn-success {
     height: 55px;
     padding: 0 18px;
-}
-
-@media (max-width: 768px) {
-    .add-item-form {
-        flex-direction: column;
-        gap: 20px;
-        align-items: stretch;
-    }
-
-    .add-item-form .btn-success {
-        width: 100%;
-    }
 }
 
 .form-group {
@@ -415,22 +378,27 @@ html, body {
     .tip-options {
         grid-template-columns: repeat(2, 1fr);
     }
-    
-    .add-item-form {
-        flex-direction: column;
-    }
 
     .page h1 {
         font-size: 2rem;
     }
-}
 
-@media (max-width: 480px) {
+    .add-item-form {
+        flex-direction: column;
+        gap: 20px;
+        align-items: stretch;
+    }
+
+    .add-item-form .btn-success {
+        width: 100%;
+    }
+
     .content-wrapper {
         padding: 10px;
     }
-    
+
     .page h1 {
         font-size: 1.8rem;
+        margin-bottom: 20px;
     }
 }
