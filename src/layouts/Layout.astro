@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Footer from '../components/Footer.astro';
 ---
 
 <!doctype html>
@@ -9,6 +10,7 @@ import '../styles/global.css';
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Dynamic Bill Splitter</title>
 		<link href="https://fonts.googleapis.com/css2?family=Diplomata+SC&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Corinthia:wght@400;700&display=swap" rel="stylesheet">
 	</head>
 	<body>
 		<div class="loading-overlay" id="loading-overlay">
@@ -20,6 +22,8 @@ import '../styles/global.css';
 		<div class="app-content">
 			<slot />
 		</div>
+		
+		<div class="page-signature">made by Nathan Trinh</div>
 	</body>
 </html>
 
@@ -30,4 +34,6 @@ import '../styles/global.css';
 		width: 100%;
 		height: 100%;
 	}
+	
+	
 </style>
