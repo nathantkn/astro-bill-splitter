@@ -17,15 +17,30 @@ const { class: className } = Astro.props;
     padding: 40px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    width: 700px;
+
+    width: 100%;       /* responsive */
+    max-width: 700px;  /* cap it */
     margin: 0 auto;
     color: white;
+  }
+
+  /* On desktops, force a bigger presence */
+  @media (min-width: 1024px) {
+    .container {
+      width: 700px;  /* always fill the 700px */
+    }
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 30px;
+    }
   }
 
   @media (max-width: 480px) {
     .container {
       padding: 20px;
-      margin: 20px;
+      margin: 10px;
     }
   }
 </style>

@@ -3,7 +3,7 @@ import Button from '../components/ui/Button.astro';
 import Container from '../components/ui/Container.astro';
 ---
 
-<div class="app-title">Chicago Bill Splitter</div>
+<div class="app-title">DYNAMIC BILL SPLITTER</div>
 
 <div class="app-content">
   <div class="page active" id="landing">
@@ -32,11 +32,35 @@ import Container from '../components/ui/Container.astro';
   </div>
 
   <div class="page" id="one-person">
-    <Button variant="back" onclick="showPage('dining')">←</Button>
-    <h2>Individual Bill Calculation</h2>
-    <div class="button-group">
-      <p style="color: white; opacity: 0.8;">Individual calculation page coming soon!</p>
-    </div>
+    <Container>
+      <div class="header">
+        <Button variant="back" onclick="showPage('dining')">←</Button>
+        <h2>Individual Bill Calculator</h2>
+      </div>
+
+      <div class="input-group">
+        <label for="dish-price">Dish Price ($)</label>
+        <input type="number" id="dish-price" placeholder="0.00" step="0.01" min="0">
+      </div>
+
+      <div class="input-group">
+        <label for="tax-rate">Tax Percentage (%)</label>
+        <input type="number" id="tax-rate" value="10.75" step="0.01" min="0" max="100">
+      </div>
+
+      <div class="input-group">
+        <label for="tip-rate">Tip Percentage (%)</label>
+        <input type="number" id="tip-rate" value="18" step="0.01" min="0" max="100">
+      </div>
+
+      <div class="action-buttons">
+        <Button variant="success" onclick="calculateOnePerson()">Calculate</Button>
+      </div>
+
+      <div id="result" style="margin-top:20px; font-size:1.2rem; font-weight:bold; color:white;">
+        Total Owed: $0.00
+      </div>
+    </Container>
   </div>
 
   <div class="page party-setup" id="party-setup">
@@ -149,6 +173,19 @@ function updatePartyMembersList() {
         continueBtn.textContent = 'Add at least 2 members';
     }
   }
+
+  function calculateOnePerson() {
+    const dishPrice = parseFloat(document.getElementById('dish-price').value) || 0;
+    const taxRate = parseFloat(document.getElementById('tax-rate').value) || 0;
+    const tipRate = parseFloat(document.getElementById('tip-rate').value) || 0;
+
+    const taxAmount = dishPrice * (taxRate / 100);
+    const tipAmount = dishPrice * (tipRate / 100);
+    const total = dishPrice + taxAmount + tipAmount;
+
+    document.getElementById('result').textContent = `Total Owed: $${total.toFixed(2)}`;
+  }
+  (window as any).calculateOnePerson = calculateOnePerson;
 
   function navigateToCalculation() {
     // Store party members in localStorage before navigation

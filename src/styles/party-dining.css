@@ -25,6 +25,18 @@ html, body {
     min-height: 100vh;
 }
 
+@media (max-width: 768px) {
+    .content-wrapper {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-wrapper {
+        padding: 10px;
+    }
+}
+
 .page {
     width: 100%;
 }
@@ -35,6 +47,19 @@ html, body {
     margin-bottom: 30px;
     font-size: 2.5rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    .page h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .page h1 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
 }
 
 .btn-back {
@@ -70,19 +95,36 @@ html, body {
 
 .add-item-form {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
     flex-wrap: wrap;
-    align-items: end;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: flex-end;
+}
+
+.add-item-form .form-group:last-child {
+    flex: 0 0 auto;
+}
+
+.add-item-form .btn-success {
+    height: 55px;
+    padding: 0 18px;
+}
+
+@media (max-width: 768px) {
+    .add-item-form {
+        flex-direction: column;
+        gap: 20px;
+        align-items: stretch;
+    }
+
+    .add-item-form .btn-success {
+        width: 100%;
+    }
 }
 
 .form-group {
     flex: 1;
     min-width: 120px;
-}
-
-.price-input {
-    max-width: 120px;
 }
 
 .form-group label {
@@ -94,12 +136,13 @@ html, body {
 
 .form-group input {
     width: 100%;
-    padding: 10px;
+    padding: 15px 12px;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.1);
     color: white;
     font-size: 1rem;
+    min-height: 55px;
 }
 
 .form-group input::placeholder {
@@ -135,77 +178,77 @@ html, body {
 }
 
 .item-card {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 10px !important;
-    padding: 15px !important;
-    backdrop-filter: blur(5px) !important;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    backdrop-filter: blur(5px);
 }
 
 .item-header {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    margin-bottom: 15px !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
 .item-info h4 {
-    color: white !important;
-    margin: 0 !important;
-    font-size: 1.1rem !important;
+    color: white;
+    margin: 0;
+    font-size: 1.1rem;
 }
 
 .item-info p {
-    color: rgba(255, 255, 255, 0.8) !important;
-    margin: 0 !important;
-    font-size: 0.9rem !important;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    font-size: 0.9rem;
 }
 
 .btn-delete {
-    background: #ef4444 !important;
-    border: none !important;
-    color: white !important;
-    padding: 8px 12px !important;
-    border-radius: 6px !important;
-    cursor: pointer !important;
-    font-size: 0.8rem !important;
-    transition: all 0.3s ease !important;
+    background: #ef4444;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
 }
 
 .btn-delete:hover {
-    background: #dc2626 !important;
+    background: #dc2626;
 }
 
 .assignment-tags {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 8px !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .person-tag {
-    padding: 6px 12px !important;
-    border-radius: 20px !important;
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    border: 2px solid transparent !important;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
 }
 
 .person-tag.assigned {
-    background: #2563eb !important;
-    color: white !important;
-    border-color: #2563eb !important;
+    background: #16a34a;
+    color: white;
+    border-color: #16a34a;
 }
 
 .person-tag.unassigned {
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: rgba(255, 255, 255, 0.8) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 .person-tag:hover {
-    transform: translateY(-1px) !important;
+    transform: translateY(-1px);
 }
 
 .tax-tip-section {

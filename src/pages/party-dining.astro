@@ -5,15 +5,13 @@ import '../styles/party-dining.css';
     <div class="fullscreen-container">
         <div class="content-wrapper">
             <div class="page" id="party-calculation">
-                <button class="btn-back" onclick="showPage('landing')">Back</button>
+                <button class="btn-back" onclick="window.location.href='/'">Back</button>
 
                 <h1>Party Bill for <span id="party-members-display"></span></h1>
 
-                <!-- Items Management Section -->
                 <div class="items-section">
                     <h3>Items Management</h3>
                     
-                    <!-- Add New Item Form -->
                     <div class="add-item-form">
                         <div class="form-group">
                             <label for="item-name">Item Name</label>
@@ -23,12 +21,11 @@ import '../styles/party-dining.css';
                             <label for="item-price">Price ($)</label>
                             <input type="number" id="item-price" placeholder="0.00" step="0.01" min="0">
                         </div>
-                        <div class="form-group" style="flex: 0 0 auto; align-self: end;">
+                        <div class="form-group">
                             <button class="btn-success" onclick="addItem()">+ Add</button>
                         </div>
                     </div>
 
-                    <!-- Items List -->
                     <div class="items-list" id="items-list">
                         <!-- Items will be dynamically added here -->
                     </div>
@@ -400,28 +397,24 @@ import '../styles/party-dining.css';
         }
 
         // Make functions globally available
-        window.addItem = addItem;
-        window.togglePersonAssignment = togglePersonAssignment;
-        window.removeItem = removeItem;
-        window.selectTip = selectTip;
-        window.selectCustomTip = selectCustomTip;
-        window.updateCalculations = updateCalculations;
-        window.initializePartyCalculation = initializePartyCalculation;
-        window.showPage = function(page) {
-            // Add your page navigation logic here
-            console.log('Navigate to:', page);
-        };
+        (window as any).addItem = addItem;
+        (window as any).togglePersonAssignment = togglePersonAssignment;
+        (window as any).removeItem = removeItem;
+        (window as any).selectTip = selectTip;
+        (window as any).selectCustomTip = selectCustomTip;
+        (window as any).updateCalculations = updateCalculations;
+        (window as any).initializePartyCalculation = initializePartyCalculation;
 
         // Load party members data when the page loads
         document.addEventListener('DOMContentLoaded', function() {
             // Get party members from localStorage or use sample data
             const storedMembers = localStorage.getItem('partyMembers');
             if (storedMembers) {
-                window.partyMembers = JSON.parse(storedMembers);
+                (window as any).partyMembers = JSON.parse(storedMembers);
             } else {
                 // Sample data for testing
-                window.partyMembers = ['Alice', 'Bob', 'Charlie'];
-                localStorage.setItem('partyMembers', JSON.stringify(window.partyMembers));
+                (window as any).partyMembers = ['Alice', 'Bob', 'Charlie'];
+                localStorage.setItem('partyMembers', JSON.stringify((window as any).partyMembers));
             }
             
             // Initialize the calculation page
