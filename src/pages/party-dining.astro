@@ -38,10 +38,9 @@ import Footer from '../components/Footer.astro';
 
                 <div class="tax-tip-section">
                     <div class="tax-section">
-                        <h3>Tax Rate</h3>
+                        <h3>Tax Percentage (%)</h3>
                         <div class="form-group">
-                            <label for="tax-rate">Tax Percentage (%)</label>
-                            <input type="number" id="tax-rate" value="10.75" step="0.01" min="0" max="100" onchange="updateCalculations()">
+                            <input type="number" id="tax-rate" value="10.75" min="0" max="100" onchange="updateCalculations()">
                         </div>
                     </div>
 
@@ -53,8 +52,7 @@ import Footer from '../components/Footer.astro';
                             <div class="tip-option" onclick="selectTip(20)">20%</div>
                         </div>
                         <div class="form-group">
-                            <label for="custom-tip">Custom Tip (%)</label>
-                            <input type="number" id="custom-tip" placeholder="Enter custom %" step="0.01" min="0" onchange="selectCustomTip()">
+                            <input type="number" id="custom-tip" placeholder="Enter custom %" min="0" onchange="selectCustomTip()">
                         </div>
                     </div>
                 </div>
@@ -182,23 +180,71 @@ import Footer from '../components/Footer.astro';
                 const itemInfo = document.createElement('div');
                 itemInfo.className = 'item-info';
                 
+                // Create item display elements
                 const itemTitle = document.createElement('h4');
                 itemTitle.textContent = item.name;
+                itemTitle.className = 'item-title';
                 
                 const itemPrice = document.createElement('p');
                 itemPrice.textContent = `$${item.price.toFixed(2)}`;
+                itemPrice.className = 'item-price';
+                
+                // Create edit mode elements
+                const nameInput = document.createElement('input');
+                nameInput.type = 'text';
+                nameInput.value = item.name;
+                nameInput.className = 'edit-input name-input';
+                nameInput.style.display = 'none';
+                
+                const priceInput = document.createElement('input');
+                priceInput.type = 'number';
+                priceInput.value = item.price;
+                priceInput.step = '0.01';
+                priceInput.min = '0';
+                priceInput.className = 'edit-input price-input';
+                priceInput.style.display = 'none';
                 
                 itemInfo.appendChild(itemTitle);
                 itemInfo.appendChild(itemPrice);
+                itemInfo.appendChild(nameInput);
+                itemInfo.appendChild(priceInput);
+                
+                // Create button group for actions
+                const buttonGroup = document.createElement('div');
+                buttonGroup.className = 'item-actions';
+
+                // Create edit button
+                const editButton = document.createElement('button');
+                editButton.className = 'btn-edit';
+                editButton.textContent = '✎';
+                editButton.onclick = () => startEditItem(item.id, itemInfo, editButton);
+
+                // Create save button
+                const saveButton = document.createElement('button');
+                saveButton.className = 'btn-save';
+                saveButton.textContent = 'Save';
+                saveButton.style.display = 'none';
+                saveButton.onclick = () => saveItemEdits(item.id, nameInput.value, parseFloat(priceInput.value), itemInfo, editButton);
+
+                // Create duplicate button
+                const duplicateButton = document.createElement('button');
+                duplicateButton.className = 'btn-duplicate';
+                duplicateButton.textContent = 'Duplicate';
+                duplicateButton.onclick = () => duplicateItem(item.id);
                 
                 // Create delete button
                 const deleteButton = document.createElement('button');
                 deleteButton.className = 'btn-delete';
-                deleteButton.textContent = 'Remove';
+                deleteButton.textContent = '🗑';
                 deleteButton.onclick = () => removeItem(item.id);
+
+                buttonGroup.appendChild(editButton);
+                buttonGroup.appendChild(saveButton);
+                buttonGroup.appendChild(duplicateButton);
+                buttonGroup.appendChild(deleteButton);
                 
                 itemHeader.appendChild(itemInfo);
-                itemHeader.appendChild(deleteButton);
+                itemHeader.appendChild(buttonGroup);
                 
                 // Create assignment tags container
                 const assignmentTags = document.createElement('div');
@@ -242,6 +288,98 @@ import Footer from '../components/Footer.astro';
         function removeItem(itemId) {
             billItems = billItems.filter(item => item.id !== itemId);
             renderItemsList();
+            updateCalculations();
+        }
+
+        function duplicateItem(itemId) {
+            const originalItem = billItems.find(item => item.id === itemId);
+            if (!originalItem) return;
+            
+            // Create new item with same properties but new ID
+            const newItem = {
+                id: itemIdCounter++,
+                name: originalItem.name,
+                price: originalItem.price,
+                assignedTo: [...originalItem.assignedTo] // Create a new array with the same assignments
+            };
+            
+            billItems.push(newItem);
+            renderItemsList();
+            updateCalculations();
+        }
+
+        function startEditItem(itemId, itemInfo, editButton) {
+            // Show edit inputs and hide display elements
+            const nameDisplay = itemInfo.querySelector('.item-title');
+            const priceDisplay = itemInfo.querySelector('.item-price');
+            const nameInput = itemInfo.querySelector('.name-input');
+            const priceInput = itemInfo.querySelector('.price-input');
+            
+            if (nameDisplay && priceDisplay && nameInput && priceInput) {
+                nameDisplay.style.display = 'none';
+                priceDisplay.style.display = 'none';
+                nameInput.style.display = 'block';
+                priceInput.style.display = 'block';
+            }
+            
+            // Show save button and hide other buttons
+            const buttonGroup = editButton.parentElement;
+            if (buttonGroup) {
+                const duplicateButton = buttonGroup.querySelector('.btn-duplicate');
+                const deleteButton = buttonGroup.querySelector('.btn-delete');
+                const saveButton = buttonGroup.querySelector('.btn-save');
+                
+                editButton.style.display = 'none';
+                if (duplicateButton) duplicateButton.style.display = 'none';
+                if (deleteButton) deleteButton.style.display = 'none';
+                if (saveButton) saveButton.style.display = 'block';
+            }
+        }
+
+        function saveItemEdits(itemId, newName, newPrice, itemInfo, editButton) {
+            const item = billItems.find(item => item.id === itemId);
+            if (!item) return;
+            
+            // Validate inputs
+            if (!newName.trim() || isNaN(newPrice) || newPrice <= 0) {
+                alert('Please enter a valid name and price.');
+                return;
+            }
+            
+            // Update item
+            item.name = newName.trim();
+            item.price = newPrice;
+            
+            // Show display elements and hide edit inputs
+            const nameDisplay = itemInfo.querySelector('.item-title');
+            const priceDisplay = itemInfo.querySelector('.item-price');
+            const nameInput = itemInfo.querySelector('.name-input');
+            const priceInput = itemInfo.querySelector('.price-input');
+            
+            if (nameDisplay && priceDisplay && nameInput && priceInput) {
+                nameDisplay.style.display = 'block';
+                priceDisplay.style.display = 'block';
+                nameInput.style.display = 'none';
+                priceInput.style.display = 'none';
+                
+                // Update display text
+                nameDisplay.textContent = item.name;
+                priceDisplay.textContent = `$${item.price.toFixed(2)}`;
+            }
+            
+            // Show all buttons except save button
+            const buttonGroup = editButton.parentElement;
+            if (buttonGroup) {
+                const duplicateButton = buttonGroup.querySelector('.btn-duplicate');
+                const deleteButton = buttonGroup.querySelector('.btn-delete');
+                const saveButton = buttonGroup.querySelector('.btn-save');
+                
+                editButton.style.display = 'block';
+                if (duplicateButton) duplicateButton.style.display = 'block';
+                if (deleteButton) deleteButton.style.display = 'block';
+                if (saveButton) saveButton.style.display = 'none';
+            }
+            
             updateCalculations();
         }
 

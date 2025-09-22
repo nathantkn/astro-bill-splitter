@@ -71,7 +71,7 @@ html, body {
 .add-item-form {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 12px;
     margin-bottom: 20px;
     align-items: flex-end;
 }
@@ -82,7 +82,7 @@ html, body {
 
 .add-item-form .btn-success {
     height: 55px;
-    padding: 0 18px;
+    padding: 0 45px;
 }
 
 .form-group {
@@ -167,8 +167,12 @@ html, body {
     font-size: 0.9rem;
 }
 
-.btn-delete {
-    background: #ef4444;
+.item-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-delete, .btn-duplicate, .btn-edit, .btn-save {
     border: none;
     color: white;
     padding: 8px 12px;
@@ -178,8 +182,61 @@ html, body {
     transition: all 0.3s ease;
 }
 
+.btn-delete {
+    background: #ef4444;
+}
+
 .btn-delete:hover {
     background: #dc2626;
+}
+
+.btn-duplicate {
+    background: #3b82f6;
+}
+
+.btn-duplicate:hover {
+    background: #2563eb;
+}
+
+.btn-save {
+    background: #10b981;
+}
+
+.btn-save:hover {
+    background: #059669;
+}
+
+.btn-edit {
+    background: #f59e0b;
+}
+
+.btn-edit:hover {
+    background: #d97706;
+}
+
+.edit-input {
+    display: none;
+    border: 1px solid #4f46e5;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    margin: 2px 0;
+}
+
+.edit-input.name-input {
+    width: 200px;
+}
+
+.edit-input.price-input {
+    width: 100px;
+}
+
+.edit-input:focus {
+    outline: none;
+    border-color: #818cf8;
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .assignment-tags {
