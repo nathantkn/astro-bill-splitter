@@ -402,7 +402,7 @@ import Footer from '../components/Footer.astro';
             const subtotal = assignedItems.reduce((sum, item) => sum + item.price, 0);
             const taxRate = parseFloat(document.getElementById('tax-rate').value) / 100;
             const taxAmount = subtotal * taxRate;
-            const tipAmount = subtotal * (currentTipPercentage / 100);
+            const tipAmount = (subtotal + taxAmount) * (currentTipPercentage / 100);
             
             // Group items by member
             const memberItems = {};
@@ -496,7 +496,7 @@ import Footer from '../components/Footer.astro';
             const subtotal = assignedItems.reduce((sum, item) => sum + item.price, 0);
             const taxRate = parseFloat(document.getElementById('tax-rate').value) / 100;
             const taxAmount = subtotal * taxRate;
-            const tipAmount = subtotal * (currentTipPercentage / 100);
+            const tipAmount = (subtotal + taxAmount) * (currentTipPercentage / 100);
             const finalTotal = subtotal + taxAmount + tipAmount;
             
             // Update receipt totals
